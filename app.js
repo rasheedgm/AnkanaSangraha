@@ -4,15 +4,14 @@ $(document).ready(function(){
     //Pull from VB
     $('#pull-data-vb').on("click", function(){
         articleAll =[];
-        console.log("hsfljh");
         document.getElementById("progress-bar").style.width = "0%";
         $.ajax({
             url:"http://www.varthabharati.in/category/ankana",
             type: 'GET',
             success: function(res){
-                var pullArticleList= $(res.responseText).find('.view-content').find('.grid');            
+                var pullArticleList= $(res.responseText).find('#block-views-child-term-blocks-block').find('.grid');            
                 pullArticleList.each(function(index,newHead){
-                    var textA="http://www.varthabharati.in/" + $(newHead).find(".views-field-title").find("a").attr("href");
+                    var textA="http://www.varthabharati.in/" + $(newHead).find(".views-row-1 ").find("a").attr("href");
                     //$('.vb-links').append(textA + "</br>");
                     getarticleVb(textA,pullArticleList.length);
                 });
