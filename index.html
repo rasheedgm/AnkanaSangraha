@@ -27,6 +27,8 @@
         <div class="data-add">
             
             <button type="button" id="pull-data-vb">   Pull From VB  </button> 
+            <button type="button" id="pull-data-pv">   Pull From PV  </button> 
+            <input type="text" id="book-title">
             <button type="button" id="click" >   Review    </button> 
             <button type="button" id="load"  ng-click="load()" >   Load    </button> 
             <!--<button type="button" id="push-data">   Push   </button> -->
@@ -38,12 +40,13 @@
         </div>
         
         <div>
-            <h6 ng-repeat=" article in allArticles">{{article.title}} - <strong>{{article.submitted}}</strong></h6>
+            <h6 ng-repeat=" article in allArticles | orderBy:'submitted'">{{article.title}} - <strong>{{article.submitted | date}}</strong>{{$index}}<a ng-click="delete($index)">  DELETE</a></h6>
         </div>
         <div >
             <a href="#" id="download">Download HTML</a>
             <pre>
-            <code id ="pulled-data"></code>       
+            <textarea id ="pulled-data" style="width: 80%;"> </textarea>
+            <code ></code>       
             </pre>
         </div>
       

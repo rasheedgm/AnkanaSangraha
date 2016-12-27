@@ -3,7 +3,7 @@ $(document).ready(function(){
     
     //Pull from VB
     $('#pull-data-vb').on("click", function(){
-        articleAll =[];
+        //articleAll =[];
         document.getElementById("progress-bar").style.width = "0%";
         $.ajax({
             url:"http://www.varthabharati.in/category/ankana",
@@ -37,7 +37,10 @@ $(document).ready(function(){
                 success: function(res){
                     article.title = $(res.responseText).find('#main-content').find("#page-title").text();
                     article.author = $(res.responseText).find('#main-content').find(".field-name-field-story-author").text();
-                    article.submitted = $(res.responseText).find('#main-content').find(".submitted").text();
+                    article.column =$(res.responseText).find('#main-content').find(".breadcrumb").find('a').last().text();
+                    tempDate = $(res.responseText).find('#main-content').find(".submitted").text().split(" ");
+                    console.log(tempDate);
+                    article.submitted = new Date(tempDate[8] +" "+ tempDate[9].split(",")[0] + " "+ tempDate[10].split(",")[0]);
                     article.body="";
                     $(res.responseText).find('#main-content').find(".field-items").find('p').each(function(index, articleBody){
                         article.body = article.body + "\n" + $(articleBody).text();
@@ -50,7 +53,7 @@ $(document).ready(function(){
                     article.url=Url;
                     article.featured=false;
                     article.published=true;
-                    article.publisher="Varthabarati"
+                    article.publisher="ವಾರ್ತಾ ಭಾರತಿ"
                     console.log(article);
                     var currentLength = updatearticleAllObj(article);
                     var progressPercent = (100*currentLength)/n;
@@ -72,13 +75,86 @@ $(document).ready(function(){
         };
     }); 
     //on click varthabharathi
+    
+    //prajavani
+      $('#pull-data-pv').on("click", function(){
+        //articleAll =[];
+        document.getElementById("progress-bar").style.width = "0%";
+        $.ajax({
+            url:"http://www.prajavani.net",
+            type: 'GET',
+            success: function(res){
+                var pullArticleList= $(res.responseText).find('.hp_columns_block').find('.slide');            
+                pullArticleList.each(function(index,newHead){
+                    var textA="http://www.prajavani.net/" + $(newHead).find("a").attr("href");
+                    getarticlePv(textA,pullArticleList.length);
+                });
+            },
+            error: function(){
+                alert("error");
+            },
+            complete: function(){
+                //alert("pull complete")
+            },
+            beforeSend: function(){
+                $('#pull-data-pv').text("Pulling data from PV..");
+            }
+        });
+        // onclick suddi ends
+        //getarticle from article page function
+        function getarticlePv(Url,n){
+            var article= {};
+            //alert(n);
+            $.ajax({
+                url: Url,
+                type: 'GET',
+                success: function(res){
+                    article.title = $(res.responseText).find('.article_body').find("h4").text();
+                    article.author = $(res.responseText).find('.article_body').find(".article_author").find(".name").text();
+                    article.column = $(res.responseText).find('.article_body').find(".article_author").find(".catname").text();
+                    article.submitted =new Date($(res.responseText).find('.article_body').find(".article_date").text());
+                    article.body=$(res.responseText).find('.article_body').find(".body").html();
+                    /*$(res.responseText).find('.article_body').find(".field-items").find('p').each(function(index, articleBody){
+                        article.body = article.body + "\n" + $(articleBody).text();
+                    });*/
+                    article.image = $(res.responseText).find('.article_body').find(".article_image").first().attr("src");
+                    //alert(article.body);
+                    if(typeof article.image === 'undefined'){  
+                        article.image="";
+                    };
+                    article.url=Url;
+                    article.featured=false;
+                    article.published=true;
+                    article.publisher="ಪ್ರಜಾವಾಣಿ"
+                    console.log(article);
+                    var currentLength = updatearticleAllObj(article);
+                    var progressPercent = (100*currentLength)/n;
+                    progressPercent = progressPercent + "%";
+                    document.getElementById("progress-bar").style.width = progressPercent;
+                    var data = {title: article.title,author:article.author, body: article.body, image: article.image, url: article.url};
+                    
+                },
+                error: function(){
+                    alert("error");
+                },
+                beforeSend: function(){
+                    $('#pull-data-pv').text("Pulling data from PV..");
+                },
+                complete: function(){
+                    $('#pull-data-pv').text("Pulling Done!!");
+                }
+            });
+        };
+    }); 
+    //end prajavani
     function updatearticleAllObj(obj){
         articleAll=articleAll.concat(obj);
         return articleAll.length;
     };
     
     $('#click').on("click", function(){
-    htmlText = '<!doctype html><html lang="kn"><head> <meta charset="utf-8" /><title>ಅಂಕಣ ಸಂಗ್ರಹ 1</title> <link rel="stylesheet" href="style.css"  type="text/css" /></head><body><div id="toc"> <h2> Table of Contents <br/></h2><ul>';
+        bookTitle =document.getElementById("book-title").value ||  'ಅಂಕಣ ಸಂಗ್ರಹ' ;
+    htmlText = '<!doctype html><html lang="kn"><head> <meta charset="utf-8" /><title>'+ bookTitle +'</title> <link rel="stylesheet" href="style.css"  type="text/css" /></head><body><div id="toc"> <h2> ಲೇಖನ ಪಟ್ಟಿ <br/></h2><ul>';
                     
     
      //toc
@@ -150,6 +226,9 @@ app.controller('articleCtrl', function($scope){
     $scope.load = function(){
         $scope.allArticles = articleAll;
     console.log($scope.allArticles);
+    }
+    $scope.delete = function(index){
+        $scope.allArticles.splice(index, 1)
     }
     
 });
