@@ -37,6 +37,7 @@ $(document).ready(function(){
                 success: function(res){
                     article.title = $(res.responseText).find('#main-content').find("#page-title").text();
                     article.author = $(res.responseText).find('#main-content').find(".field-name-field-story-author").text();
+                    article.submitted = $(res.responseText).find('#main-content').find(".submitted").text();
                     article.body="";
                     $(res.responseText).find('#main-content').find(".field-items").find('p').each(function(index, articleBody){
                         article.body = article.body + "\n" + $(articleBody).text();
