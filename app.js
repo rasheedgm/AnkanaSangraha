@@ -77,7 +77,7 @@ $(document).ready(function(){
     };
     
     $('#click').on("click", function(){
-    htmlText = '<!doctype html><html lang="kn"><head> <meta charset="utf-8" /><title>ಅಂಕಣ ಸಂಗ್ರಹ 1</title> <link rel="stylesheet" href="style.css"  type="text/css" /></head><body><div id="toc"> <h2> Table of Contents <br /></h2<ul>';
+    htmlText = '<!doctype html><html lang="kn"><head> <meta charset="utf-8" /><title>ಅಂಕಣ ಸಂಗ್ರಹ 1</title> <link rel="stylesheet" href="style.css"  type="text/css" /></head><body><div id="toc"> <h2> Table of Contents <br/></h2><ul>';
                     
     
      //toc
@@ -99,6 +99,22 @@ $(document).ready(function(){
     htmlText = htmlText + '</body></html>'
     $('#pulled-data').text(htmlText);
         
+    });
+    
+    //download
+    function downloadInnerHtml(filename, elId, mimeType) {
+        var elHtml =htmlText; //document.getElementById(elId).textContent;
+        var link = document.createElement('a');
+        mimeType = mimeType || 'text/plain';
+
+        link.setAttribute('download', filename);
+        link.setAttribute('href', 'data:' + mimeType  +  ';charset=utf-8,' + encodeURIComponent(elHtml));
+        link.click(); 
+        }
+
+    
+    $('#download').on("click",function(){
+        downloadInnerHtml("fileName.html", 'pulled-data','text/html');
     });
     
     
@@ -130,6 +146,10 @@ $(document).ready(function(){
 /*angular app*/
 app=angular.module('articleApp', []);
 app.controller('articleCtrl', function($scope){
+    $scope.load = function(){
+        $scope.allArticles = articleAll;
+    console.log($scope.allArticles);
+    }
     
 });
 
