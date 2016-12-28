@@ -29,7 +29,7 @@
             <button type="button" id="pull-data-vb">   Pull From VB  </button> 
             <button type="button" id="pull-data-pv">   Pull From PV  </button> 
             <input type="text" id="book-title">
-            <button type="button" id="click" >   Review    </button> 
+            <button type="button" id="review" >   Review    </button> 
             <button type="button" id="load"  ng-click="load()" >   Load    </button> 
             <!--<button type="button" id="push-data">   Push   </button> -->
         </div>
@@ -40,7 +40,15 @@
         </div>
         
         <div>
-            <h6 ng-repeat=" article in allArticles | orderBy:'submitted'">{{article.title}} - <strong>{{article.submitted | date}}</strong>{{$index}}<a ng-click="delete($index)">  DELETE</a></h6>
+            <table>
+                <thead>
+                    <tr><th>Title</th><th>Date</th><th>Publish</th></tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat=" article in allArticles | orderBy:'submitted'"><td>{{article.title}}</td><td>{{article.submitted | date}}</td><td style="text-align: center;"><input type="checkbox" ng-model="article.published"> </td></tr>
+                </tbody>
+            </table>
+            
         </div>
         <div >
             <a href="#" id="download">Download HTML</a>

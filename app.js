@@ -152,7 +152,7 @@ $(document).ready(function(){
         return articleAll.length;
     };
     
-    $('#click').on("click", function(){
+    $('#review').on("click", function(){
         bookTitle =document.getElementById("book-title").value ||  'ಅಂಕಣ ಸಂಗ್ರಹ' ;
     htmlText = '<!doctype html><html lang="kn"><head> <meta charset="utf-8" /><title>'+ bookTitle +'</title> <link rel="stylesheet" href="style.css"  type="text/css" /></head><body><div id="toc"> <h2> ಲೇಖನ ಪಟ್ಟಿ <br/></h2><ul>';
                     
@@ -160,7 +160,9 @@ $(document).ready(function(){
      //toc
       articleAll.forEach(function(article,index){
         i = index+1;
-        htmlText = htmlText + '<li><a href="#ch'+i+ '">'+ article.title + '</a></li>';
+        if(article.published == true){
+            htmlText = htmlText + '<li><a href="#ch'+i+ '">'+ article.title +' -  ' +article.author +'</a></li>';
+        }
     });  
  
      
@@ -170,7 +172,9 @@ $(document).ready(function(){
     //
     articleAll.forEach(function(article,index){
         i = index+1;
-        htmlText = htmlText + '<h2 id="ch'+ i + '">'+ article.title + '</h2>' +'<h3>'+article.author +'</h3>' + '<p>'+ article.body+'</p>'+'<h3>'+article.publisher +'</h3>'
+        if(article.published == true){
+           htmlText = htmlText + '<h2 id="ch'+ i + '">'+ article.title + '</h2>' +'<h3><strong>'+article.author +'</strong> - ' + article.column +'</h3>' + '<p>'+ article.body+'</p>'+'<h3>'+article.publisher + ' - ' + article.submitted.toDateString() +'</h3>' 
+        }    
     });
     
     htmlText = htmlText + '</body></html>'
@@ -225,7 +229,6 @@ app=angular.module('articleApp', []);
 app.controller('articleCtrl', function($scope){
     $scope.load = function(){
         $scope.allArticles = articleAll;
-    console.log($scope.allArticles);
     }
     $scope.delete = function(index){
         $scope.allArticles.splice(index, 1)
