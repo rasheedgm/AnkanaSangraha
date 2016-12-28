@@ -237,7 +237,7 @@ $(document).ready(function(){
     
     $('#review').on("click", function(){
         bookTitle =document.getElementById("book-title").value ||  'ಅಂಕಣ ಸಂಗ್ರಹ' ;
-    htmlText = '<!doctype html><html lang="kn"><head> <meta charset="utf-8" /><title>'+ bookTitle +'</title> <link rel="stylesheet" href="style.css"  type="text/css" /></head><body><div id="toc"> <h2> ಲೇಖನ ಪಟ್ಟಿ <br/></h2><ul>';
+    htmlText = '<!doctype html><html lang="kn"><head> <meta charset="utf-8" /><title>'+ bookTitle +'</title> <link rel="stylesheet" href="style.css"  type="text/css" /><style>img{float: left;margin: 1%;width: 48%;margin-left:0%;}p{text-align: justify;margin: 1%;}.title, .subtitle{text-align: center;}</style></head><body><div id="toc"> <h2> ಲೇಖನ ಪಟ್ಟಿ <br/></h2><ul>';
                     
     
      //toc
@@ -256,7 +256,7 @@ $(document).ready(function(){
     articleAll.forEach(function(article,index){
         i = index+1;
         if(article.published == true){
-           htmlText = htmlText + '<h2 id="ch'+ i + '">'+ article.title + '</h2>' +'<h3><strong>'+article.author +'</strong> - ' + article.column +'</h3>' + '<p>'+ article.body+'</p>'+'<h3>'+article.publisher + ' - ' + article.submitted.toDateString() +'</h3>' 
+           htmlText = htmlText + '<h2 id="ch'+ i + '" style="text-align: center;">'+ article.title + '</h2>' +'<h3 style="text-align: center;"><strong>'+article.author +'</strong> - ' + article.column +'</h3>' + '<p>'+ article.body+'</p>'+'<h3>'+article.publisher + ' - ' + article.submitted.toDateString() +'</h3>' 
         }    
     });
     
