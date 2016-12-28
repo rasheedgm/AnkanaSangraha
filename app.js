@@ -147,6 +147,89 @@ $(document).ready(function(){
         };
     }); 
     //end prajavani
+    
+    
+    //udayavani
+      $('#pull-data-uv').on("click", function(){
+        //articleAll =[];
+          document.getElementById("progress-bar").style.width = "0%";
+          uvUrls= ["http://www.udayavani.com/kannada/category/articles","http://www.udayavani.com/kannada/category/articles?page=0%2C0%2C1"];
+          uvUrls.forEach(function(uvUrl, index){
+              $.ajax({
+                  url: uvUrl,
+                  type: 'GET',
+                  success: function(res){
+                      var pullArticleList= $(res.responseText).find('#block-views-child-term-blocks-block').find('.grid');
+                      pullArticleList.each(function(index,newHead){
+                          var textA="http://www.udayavani.com" + $(newHead).find(".views-field-title").find("a").attr("href");
+                          var textColumn =$(newHead).find("H2").text()
+                          getarticleUv(textA,16,textColumn);
+                      });
+                  },
+                  error: function(){
+                      alert("error");
+                  },
+                  complete: function(){
+                      //alert("pull complete")
+                  },
+                  beforeSend: function(){
+                      $('#pull-data-uv').text("Pulling data from PV..");
+                  }
+              });
+          });
+        
+        
+        // onclick suddi ends
+        //getarticle from article page function
+        function getarticleUv(Url,n,columnName){
+            var article= {};
+            //alert(n);
+            $.ajax({
+                url: Url,
+                type: 'GET',
+                success: function(res){
+                    article.title = $(res.responseText).find("#page-title").text();
+                    article.author = "";//$(res.responseText).find('#block-system-main').find(".article_author").find(".name").text();
+                    article.column = columnName;//$(res.responseText).find('#block-system-main').find(".article_author").find(".catname").text();
+                    tempDate = $(res.responseText).find('#block-system-main').find(".submitted").text().split(" ");
+                    console.log(n);
+                    article.submitted = new Date(tempDate[7] +" "+ tempDate[8].split(",")[0] + " "+ tempDate[9].split(",")[0]);
+                    article.body=$(res.responseText).find('#block-system-main').find(".field-name-body").find(".field-item").html();
+                    /*$(res.responseText).find('#block-system-main').find(".field-items").find('p').each(function(index, articleBody){
+                        article.body = article.body + "\n" + $(articleBody).text();
+                    });*/
+                    article.image = $(res.responseText).find('#block-system-main').find(".field-type-image").first().attr("src");
+                    //alert(article.body);
+                    if(typeof article.image === 'undefined'){  
+                        article.image="";
+                    };
+                    article.url=Url;
+                    article.featured=false;
+                    article.published=true;
+                    article.publisher="ಉದಯವಾಣಿ"
+                    console.log(article);
+                    var currentLength = updatearticleAllObj(article);
+                    var progressPercent = (100*currentLength)/n;
+                    progressPercent = progressPercent + "%";
+                    document.getElementById("progress-bar").style.width = progressPercent;
+                    var data = {title: article.title,author:article.author, body: article.body, image: article.image, url: article.url};
+                    
+                },
+                error: function(){
+                    alert("error");
+                },
+                beforeSend: function(){
+                    $('#pull-data-uv').text("Pulling data from PV..");
+                },
+                complete: function(){
+                    $('#pull-data-uv').text("Pulling Done!!");
+                }
+            });
+        };
+    }); 
+    //end udayavani
+    
+    
     function updatearticleAllObj(obj){
         articleAll=articleAll.concat(obj);
         return articleAll.length;
