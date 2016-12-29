@@ -229,6 +229,83 @@ $(document).ready(function(){
     }); 
     //end udayavani
     
+        //sanjevani
+      $('#pull-data-sv').on("click", function(){
+        //articleAll =[];
+        document.getElementById("progress-bar").style.width = "0%";
+        $.ajax({
+            url:"http://sanjevani.com/sanjevani/category/%E0%B2%85%E0%B2%82%E0%B2%95%E0%B2%A3%E0%B2%97%E0%B2%B3%E0%B3%81/",
+            type: 'GET',
+            success: function(res){
+                var pullArticleList= $(res.responseText).find('#blog-grid').find('.blog-grid-items');            
+                pullArticleList.each(function(index,newHead){
+                    var textA=$(newHead).find("a").attr("href");
+                    getarticleSv(textA,pullArticleList.length);
+                });
+            },
+            error: function(){
+                alert("error");
+            },
+            complete: function(){
+                //alert("pull complete")
+            },
+            beforeSend: function(){
+                $('#pull-data-sv').text("Pulling data from SV..");
+            }
+        });
+        // onclick suddi ends
+        //getarticle from article page function
+        function getarticleSv(Url,n){
+            var article= {};
+            //alert(n);
+            $.ajax({
+                url: Url,
+                type: 'GET',
+                success: function(res){
+                    article.title = $(res.responseText).find('article').find("h1").text();
+                    article.author = "ಸಂಜೆವಾಣಿ";//$(res.responseText).find('.article_body').find(".article_author").find(".name").text();
+                    article.column ="ಅಂಕಣಗಳು";// $(res.responseText).find('.article_body').find(".article_author").find(".catname").text();
+                    article.submitted =new Date($(res.responseText).find('article').find(".date").text());
+                    //article.body=$(res.responseText).find('article').find(".entry-content").find('div').html();
+                    article.body = "";
+                    $(res.responseText).find('article').find(".entry-content").find('div').find('p').each(function(index, articleBody){
+                        p="<p>" + articleBody.innerHTML + "</p>"
+                        article.body = article.body + p;
+                    });
+                    TempImageUrl =$(res.responseText).find('article').find(".entry-content-media").css("background-image");                    
+                    //alert(article.body);
+                    article.image = TempImageUrl;
+                    /*if(typeof TempImageUrl === 'undefined'){  
+                        article.image="";
+                    } else{
+                        //article.image = TempImageUrl;//.replace('url(','').replace(')','').replace(/\"/gi, "");
+                    };*/
+                    article.url=Url;
+                    article.featured=false;
+                    article.published=true;
+                    article.publisher="ಸಂಜೆವಾಣಿ"
+                    console.log(article);
+                    var currentLength = updatearticleAllObj(article);
+                    var progressPercent = (100*currentLength)/n;
+                    progressPercent = progressPercent + "%";
+                    document.getElementById("progress-bar").style.width = progressPercent;
+                    var data = {title: article.title,author:article.author, body: article.body, image: article.image, url: article.url};
+                    
+                },
+                error: function(){
+                    alert("error");
+                },
+                beforeSend: function(){
+                    $('#pull-data-sv').text("Pulling data from SV..");
+                },
+                complete: function(){
+                    $('#pull-data-sv').text("Pulling Done!!");
+                }
+            });
+        };
+    }); 
+    //end sanjevani
+    
     
     function updatearticleAllObj(obj){
         articleAll=articleAll.concat(obj);
